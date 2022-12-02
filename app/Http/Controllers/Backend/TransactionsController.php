@@ -672,7 +672,7 @@ class TransactionsController extends Controller
 
             $insert = ApprovalLog::create([
                 "user_id" => auth()->user()->id,
-                "recovery_id" => $recovery->id,
+                "recovery_id" => $recover->id,
                 "comments" => 'Edited',
                 "weight" => $approver->weight,
                 "is_approved" => false,
@@ -769,6 +769,7 @@ class TransactionsController extends Controller
             'currency_id' => request('currency'),
             'ein_available' => request('ein_available'),
             'pod_available' => request('pod_available'),
+            'level' => 1,
             'invoice_date' =>
             Carbon::createFromFormat("m-d-Y", request("invoice_date")),
             'user_id' => auth()->user()->id

@@ -45,6 +45,12 @@
                 <div class="dropdown-header bg-light py-2">
                     <strong>@lang('Account')</strong>
                 </div>
+                <x-utils.link
+                    icon="c-icon mr-2 cil-user"
+                    :href="route('frontend.user.account')"
+                    :active="activeClass(Route::is('frontend.user.account'))"
+                    :text="__('My Account')"
+                    class="dropdown-item" />
 
                 <x-utils.link
                     class="dropdown-item"

@@ -164,7 +164,7 @@
                                     <td>{{$rcn->carrierR->name}}</td>
                                     <td>@if($rcn->amount)<span class="font-weight-bold">{{ number_format($rcn->amount , 2)
                                         }}</span>@endif</td>
-                                    <td>{{@$rcn->currency->name ? $rcn->currency->name : 'NA'}}</td>
+                                    <td>{{@$invoice->currency->name}}</td>
                                 </tr>
                             @endforeach
                             </tbody>

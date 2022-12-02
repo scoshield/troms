@@ -24,7 +24,6 @@
                         @include('includes.partials.lang')
                     </li>
                 @endif
-
                 @guest
                     <li class="nav-item">
                         <x-utils.link
@@ -82,7 +81,7 @@
                                 :href="route('frontend.user.account')"
                                 :active="activeClass(Route::is('frontend.user.account'))"
                                 :text="__('My Account')"
-                                class="dropdown-item" />
+                                class="dropdown-item" />                           
 
                             <x-utils.link
                                 :text="__('Logout')"

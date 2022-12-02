@@ -79,14 +79,12 @@
                             </a>
 
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                                @if($invoice->recoveryInvoice->invoice_number == 0)
                                     @if($logged_in_user->can('admin.access.rcns.add_recovery_invoice'))
                                         <a class="dropdown-item"
                                             href="{{ route('admin.invoices.attach_recovery_invoice', $invoice->id) }}">Update
                                             Recovery Invoice
                                         </a>
                                     @endif
-                                @endif
                                 @if($logged_in_user->can('admin.access.rcns.edit_invoice'))
                                     <!-- <a class="dropdown-item"
                                         href="{{ route('admin.transactions.view_invoice', $invoice->id) }}">
