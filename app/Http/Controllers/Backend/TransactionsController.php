@@ -663,7 +663,7 @@ class TransactionsController extends Controller
             'user_id' => auth()->user()->id
         ]);      
         $recover->level = 1;
-        $recover->status = 'pending';
+        $recover->status = 'partially_approved';
         $recover->save();
 
         if($recover->approvalLogs)
