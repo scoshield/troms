@@ -25,6 +25,7 @@
 
                         <div>
                             Note: (You can attach more than one RCN when creating an invoice) 
+                            <!-- The invoices can be attached more than one. -->
                         </div>
 
                         <form class="ml-1" action="{{ route('admin.transactions.attach-invoice') }}" method="get"
