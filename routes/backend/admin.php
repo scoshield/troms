@@ -60,7 +60,7 @@ Route::group(['middleware' => 'permission:admin.access.dashboard'], function () 
         ->name('transactions.invalid-report')
         ->breadcrumbs(function (Trail $trail) {
             $trail->push(__('Invalid Incoices Report'), route('admin.transactions.invalid-report'));
-        })->middleware('permission:admin.access.rcns.report');
+        })->middleware('permission:admin.access.rcns.reports');
 
     Route::get('transactions/{id}/view', [TransactionsController::class, 'view'])
         ->name('transactions.view');

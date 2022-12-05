@@ -18,7 +18,7 @@
         @lang('REPORT: FULLY APPROVED INVOICES')
     </x-slot>
 
-    @if ($logged_in_user->can('admin.access.rcns.report'))
+    @if ($logged_in_user->can('admin.access.rcns.reports'))
     <x-slot name="headerActions">
         <x-utils.link icon="c-icon cil-plus" class="card-header-action" href="{{ url('admin/transactions/report?download=1') }}"
             :text="__('Export')" />
