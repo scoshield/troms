@@ -60,7 +60,7 @@
                 <th>Dept.</th>
             </tr>
             @foreach($invoices as $invoice)
-            @if(count($invoice->rcns) > 0)
+            @if(count($invoice->rcns) > 0 && @$invoice->recoveryInvoice->invoice_amount == 0)
                 <tr>
                     <td>
                         <div class="dropdown show">

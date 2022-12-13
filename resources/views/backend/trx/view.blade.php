@@ -62,7 +62,7 @@
                             @elseif($transaction->status == App\Models\Transaction::$AMOUNT_NOT_EQUAL)
                             <a href="#" class="badge badge-danger">Invoice mismatch</a>
                             @elseif($transaction->status == App\Models\Transaction::$INVOICE_MATCHED)
-                            <a href="#" class="badge badge-success">Invoice matched</a>
+                            <a href="#" class="badge badge-success">Invoice amount matched</a>
                             @elseif($transaction->status == App\Models\Transaction::$INVOICE_ATTACHED)
                             <a href="#" class="badge badge-primary">Invoice attached</a>
                             @elseif($transaction->status == App\Models\Transaction::$APPROVED)

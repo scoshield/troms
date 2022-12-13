@@ -14,6 +14,7 @@ use App\Models\Shipper;
 use App\Models\Transaction;
 use App\Models\UploadedTransaction;
 use App\Models\Vehicle;
+use App\Models\Currency;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -98,34 +99,39 @@ class CSVProcessContoller extends Controller
         $shipper = Shipper::updateOrCreate(["name" => $slugged["consignee_shipper"]]);
         $consignee = Consignee::updateOrCreate(["name" => $slugged["consignee_shipper"]]);
         $vehicle = Vehicle::updateOrCreate(["number" => $slugged["vector"], "carrier_id" => $carrier->id], ["trailer" => $slugged["trailer"]]);
+        $currency = Currency::updateOrCreate(["name"=>$slugged["currency"]], ["symbol"=>$slugged["currency"]]);
         // $department = Department::updateOrCreate(["name"=> "Import", "code"=> $slugged["department_code"], "com"->$slugged["com"], "branch"=>$slugged["branch_code"]]);
         // $cargo_type = CargoType::updateOrCreate(["name" => $slugged[""]]);
 
-        $trx = Transaction::updateOrCreate(['rcn_no' => $slugged["rcn_no"]], [
-            "agent_departure" => $agent->id,
-            "agent_destination" => $destination->id,
-            "carrier" => $carrier->id,
-            "shipper" => $shipper->id,
-            "consignee" => $consignee->id,
-            "vehicle" => $vehicle->id,
-            "date" => $slugged["loading_date"] ? Carbon::createFromFormat("d/m/Y", $slugged["loading_date"]) : null,
-            "tracking_no" => $slugged["tracking_file_no"], // good
-            "marks" => "marks hard coded import",
-            "cargo_type" => 1,
-            "cargo_desc" => "",
-            "quantity" => $slugged["planned_quantity_20"],
-            "weight" => $slugged["planned_weight_kgs"],
-            "remarks" => "hard coded remarks on import",
-            "rcn_no" => $slugged["rcn_no"],
-            "purchase_order_no" => $slugged["purchasing_order_no"],
-            "customs_no" => $slugged["parcel_seal_no"],
-            "notes" => $slugged["po_instructions"],
-            "status" => $slugged["rcn_status"],
-            "amount" => $slugged["estimated_rate"],
-            "department_code" => $slugged["department_code"],
-            "department_com" => $slugged["com"],
-            "source_type" => Transaction::$SOURCE_TYPE_UPLOADED
-        ]);
+       if($slugged["rcn_status"] == "ACCOUNTING")
+       {
+            $trx = Transaction::updateOrCreate(['rcn_no' => $slugged["rcn_no"]], [
+                "agent_departure" => $agent->id,
+                "agent_destination" => $destination->id,
+                "carrier" => $carrier->id,
+                "shipper" => $shipper->id,
+                "consignee" => $consignee->id,
+                "vehicle" => $vehicle->id,
+                "date" => $slugged["loading_date"] ? Carbon::createFromFormat("d/m/Y", $slugged["loading_date"]) : null,
+                "tracking_no" => $slugged["tracking_file_no"], // good
+                "marks" => "Initial import",
+                "cargo_type" => 1,
+                "cargo_desc" => "",
+                "quantity" => $slugged["planned_quantity_20"],
+                "weight" => $slugged["planned_weight_kgs"],
+                "remarks" => "hard coded remarks on import",
+                "rcn_no" => $slugged["rcn_no"],
+                "purchase_order_no" => $slugged["purchasing_order_no"],
+                "customs_no" => $slugged["parcel_seal_no"],
+                "notes" => $slugged["po_instructions"],
+                "status" => $slugged["rcn_status"],
+                "amount" => $slugged["estimated_rate"],
+                "department_code" => $slugged["department_code"],
+                "department_com" => $slugged["com"],
+                "currency_id"=>$currency->id,
+                "source_type" => Transaction::$SOURCE_TYPE_UPLOADED
+            ]);
+       }
     }
 
     public function checkUploadedFileProperties($extension, $fileSize)

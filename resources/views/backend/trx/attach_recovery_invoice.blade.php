@@ -26,8 +26,12 @@
                         @csrf()
 
                         <div class="col-lg-8">
-                            <label for=" exampleFormControlInput1" class="form-label">Currency</label>
-                            @include('backend.trx.currencies_partial')
+                            <label for=" exampleFormControlInput1" class="form-label">Currency </label>
+                            <select name="currency" class="form-control">
+                            @foreach (App\Models\Currency::all() as $currency)
+                                <option value="{{ $currency->id }}" @if($currency->name == 'KES') selected @endif @if(old('currency') == $currency->id) selected @endif)>{{ $currency->name }}</option>
+                            @endforeach
+                            </select>
                         </div>
 
                         <div class="col-lg-8 mt-4">
@@ -157,7 +161,7 @@
                                             <a href="#" class="badge badge-info">Pending</a>
                                         @elseif($rcn->status == App\Models\Transaction::$AMOUNT_NOT_EQUAL)
                                             <a href="#" class="badge badge-danger">Invoice mismatch</a>
-                                        @elseif($rcn->status == App\Models\Transaction::$INVOICE_MATCHED)
+                                        @elseif($rcn->status == App\Models\Transaction::$INVOICE_MATCHED && $rcn->currency_id == $invoice->currency_id)
                                             <a href="#" class="badge badge-success">Invoice matched</a>
                                         @elseif($rcn->status == App\Models\Transaction::$INVOICE_ATTACHED)
                                             <a href="#" class="badge badge-primary">Invoice attached</a>
@@ -165,6 +169,8 @@
                                             <a href="#" class="badge badge-primary">Approved</a>
                                         @elseif($rcn->status == App\Models\Transaction::$PARTIALLY_APPROVED)
                                             <a href="#" class="badge badge-primary">Partially Approved</a>
+                                        @else
+                                        <a href="#" class="badge badge-danger">Invoice Error</a>
                                         @endif
                                     </span>                                    
                                 </div>

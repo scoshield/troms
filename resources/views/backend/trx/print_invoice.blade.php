@@ -73,11 +73,16 @@
         <?php $invoice = $recovery_invoice->invoice ?>
         
         @if($recovery_invoice->status == 'approved')
-            <h3  style="text-align: center; font-size: 20px; text-shadow: 1px 1px 1px #000; margin: 0px;">TROM TRANSPORTER'S INVOICE FULLY VALIDATED FORM</h3>
-            <h5 class="font-weight-bold mt-4" style="text-decoration: underline; text-align: center; font-size: 24px; margin: 0px;">APPROVAL FORM ID: {{@$invoice->id}}{{Carbon\Carbon::parse($recovery_invoice->invoice_date)->format("Ymd")}}</h5>
+            <div style="background-color: #7ad97d94; padding: 10px; 20px;">
+                <h3  style="text-align: center; font-size: 20px; text-shadow: 1px 1px 1px #000; margin: 0px;">TROM TRANSPORTER'S INVOICE FULLY VALIDATED FORM</h3>
+                <h5 class="font-weight-bold mt-4" style="text-decoration: underline; text-align: center; font-size: 24px; margin: 0px;">APPROVAL FORM ID: {{@$invoice->id}}{{Carbon\Carbon::parse($recovery_invoice->invoice_date)->format("Ymd")}}</h5>
+            </div>
         @else
+        <div style="background-color: #d97a9494; padding: 10px; 20px;">
             <h3  style="text-align: center; font-size: 20px; text-shadow: 1px 1px 1px #000; margin: 0px;">TROM TRANSPORTER'S INVOICE PARTIALLY VALIDATED FORM</h3>
             <h5 class="font-weight-bold mt-4" style="text-decoration: underline; text-align: center; font-size: 24px; margin: 0px;">INVOICE ID: {{@$invoice->id}}</h5>
+    
+        </div>
         @endif
         <div class="wrapper">        
             <table style="width: 100%; border: none;">

@@ -801,6 +801,7 @@ class TransactionsController extends Controller
 
         $invoices = TransactionInvoice::with(['rcns' => function($query) use ($permitted){
                         $query->whereIn("transactions.department_code", $permitted['departments']);
+                        // $query->whereNull('invoice_id');
                     }])
                     ->whereNull('invoice_id') 
                     ->orWhereIn('status', ['rejected', 'pending'])

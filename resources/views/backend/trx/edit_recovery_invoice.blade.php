@@ -145,7 +145,7 @@
                                     <span>
                                         @if($rcn->status == App\Models\Transaction::$PENDING)
                                         <a href="#" class="badge badge-info">Pending</a>
-                                        @elseif($rcn->status == App\Models\Transaction::$AMOUNT_NOT_EQUAL)
+                                        @elseif($rcn->status == App\Models\Transaction::$AMOUNT_NOT_EQUAL  && $rcn->currency_id == $invoice->currency_id)
                                         <a href="#" class="badge badge-danger">Invoice mismatch</a>
                                         @elseif($rcn->status == App\Models\Transaction::$INVOICE_MATCHED)
                                         <a href="#" class="badge badge-success">Invoice matched</a>
@@ -155,6 +155,8 @@
                                         <a href="#" class="badge badge-primary">Approved</a>
                                         @elseif($rcn->status == App\Models\Transaction::$PARTIALLY_APPROVED)
                                         <a href="#" class="badge badge-primary">Partially Approved</a>
+                                        @else
+                                        <a href="#" class="badge badge-danger">Invoice Error</a>
                                         @endif
                                     </span>
                                     <h6 class="mt-4 mb-2"><strong>File Number:</strong> 

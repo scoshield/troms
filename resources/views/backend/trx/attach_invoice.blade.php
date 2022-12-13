@@ -92,7 +92,11 @@
 
                         <div class="col-lg-5">
                             <label for="exampleFormControlInput1" class="form-label">Currency</label>
-                            @include('backend.trx.currencies_partial')
+                            <select name="currency" class="form-control">
+                            @foreach (App\Models\Currency::all() as $currency)
+                                <option value="{{ $currency->id }}" @if($currency->name == 'KES') selected @endif @if(old('currency') == $currency->id) selected @endif)>{{ $currency->name }}</option>
+                            @endforeach
+                            </select>
                         </div>
 
                         <div class="col-lg-5 mt-4">

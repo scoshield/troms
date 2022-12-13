@@ -88,9 +88,9 @@
                         </div>
                     </div>
                 </td>
-                <td>{{ Carbon\Carbon::parse($recovery_invoice->invoice->created_at)->format('d/m/Y')}}</td>
+                <td>{{ Carbon\Carbon::parse(@$recovery_invoic->invoice->created_at)->format('d/m/Y')}}</td>
                 <td>{{ @$recovery_invoice->invoice->invoice_number }}</td>
-                <td>{{ Carbon\Carbon::parse($recovery_invoice->invoice->invoice_date)->format('d/m/Y')}}</td>
+                <td>{{ Carbon\Carbon::parse(@$recovery_invoice->invoice->invoice_date)->format('d/m/Y')}}</td>
                 <td>
                     @foreach(@$recovery_invoice->invoice->rcns as $rcn)
                             {{ $rcn->rcn_no }}
