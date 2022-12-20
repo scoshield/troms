@@ -11,6 +11,10 @@
     <x-slot name="header">
         @lang('Recovery Invoices')
     </x-slot>
+    <x-slot name="headerActions">
+        <x-utils.link icon="c-icon cil-plus" class="card-header-action" href="{{ url('admin/rcns/recovery-invoices?status=rejected&rejected=1&download=1') }}"
+            :text="__('Export')" />
+    </x-slot>
 
     <x-slot name="body">
         <div>

@@ -871,6 +871,14 @@ class TransactionsController extends Controller
         
         if(request('status') == 'rejected')
         {
+            if (request('download') == 1) {      
+                $view = view('backend.trx.rejected_export',
+                    compact('recovery_invoices'));   
+    
+                    return Excel::download(new ValidExports($view),  ' Rejected invoices report ' . date('Y-m-h H:i:s') . '.csv');
+    
+            }
+
             return view('backend.trx.rejected_invoice', compact('recovery_invoices', 'levels'));
         }
 
