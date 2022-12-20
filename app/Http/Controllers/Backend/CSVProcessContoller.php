@@ -70,7 +70,8 @@ class CSVProcessContoller extends Controller
                 }
 
                 try {
-                    //var_dump(count($slugged));
+                    // var_dump(count($slugged));
+                    // var_dump($slugged["rcn_status"]);
                     $this->saveUploadedRcn($slugged);
                     unset($slugged['rcn_status']);
                     unset($slugged['anomaly_on']);

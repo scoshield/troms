@@ -232,7 +232,7 @@
 
                                     <div class="d-flex justify-content-between">
                                         <div class="font-weight-bold">Customs Declaration #:</div>
-                                        <div>IM400367020</div>
+                                        <div>:</div>
                                     </div>
                                 </div>
                             </div>
@@ -376,15 +376,15 @@
                             <h4 class="mb-2">REMARKS & INSTRUCTIONS</h4>
 
                             <div>
-                                DELIVER TO CLIENT: BREWERIES KISUMU SIP CALL: 0714139716
+                                DELIVER TO CLIENT: 
                             </div>
                             <div>&nbsp;</div>
                             <div>
-                                RETURN EMPTY ICD
+                                
                             </div>
                             <div>&nbsp;</div>
                             <div>
-                                SEAL - H2815647/00000012/D265665/ECTS-5858
+                                SEAL 
                             </div>
                         </div>
                         <div class="col-sm-6">

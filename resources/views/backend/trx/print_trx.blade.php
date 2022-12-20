@@ -113,11 +113,7 @@
                         </td>
                         <td>
                             <h3 class="underline"><u>Carrier</u></h3>
-                            {{-- <div> DANKI VENTURES LTD </div>
-                            <div>14993</div>
-                            <div>&nbsp;</div>
-                            <div>NAIROBI</div>
-                            <div>KENYA</div> --}}
+                            <div> {{ @$transaction->carrierR->name }} </div>                            
                         </td>
                         <td>
                             <div>
@@ -137,22 +133,22 @@
                             </div> --}}
                             <div>&nbsp;</div>
                             <div class="row">
-                                {{-- <div class="col-sm-6">
+                                <div class="col-sm-6">
                                     <span style="font-weight: bold">Vehicle</span>
                                     <span>:</span>
-                                    <span>KBV934K</span>
+                                    <span>{{@$transaction->vehicleR->number}}</span>
                                 </div>
                                 <div class="col-sm-6">
                                     <span style="font-weight: bold">Trailer</span>
                                     <span>:</span>
-                                    <span>ZE5295</span>
-                                </div> --}}
+                                    <span>{{@$transaction->vehicleR->trailer}}</span>
+                                </div>
                             </div>
-                            {{-- <div>
+                            <div>
                                 <span style="font-weight: bold">Owner</span>
                                 <span>:</span>
-                                <span>DANKI</span>
-                            </div> --}}
+                                <span>{{@$transaction->consigneeR->name}}</span>
+                            </div>
                             <div>
                                 <span style="font-weight: bold">DRIVER</span>
                                 <span>:</span>
@@ -173,7 +169,7 @@
                             </td>
                             <td style="text-align: center">
                                 <span style="font-weight: bold">TOTAL WEIGHT</span>
-                                <span style="padding-left: 20px">16,420.00</span>
+                                <span style="padding-left: 20px">{{@$transaction->weight}}</span>
                             </td>
                         </tr>
                     </tbody>
@@ -202,7 +198,7 @@
                                 <td style="text-align: center">{{ $transaction->qty }}</td>
                                 <td style="text-align: center">{{ $transaction->cargo_type }}</td>
                                 <td style="text-align: center">{{ $transaction->weight }}</td>
-                                <td style="text-align: center">{{ $transaction->consignee }}</td>
+                                <td style="text-align: center">{{ $transaction->consigneeR->name }}</td>
                                 <td style="text-align: center">{{ $transaction->shipper }}</td>
                             </tr>
                         </tbody>
@@ -216,6 +212,18 @@
                                         <div style="text-align: center">
                                             <img src="data:image/png;base64, {!! $qrcode !!}">
                                         </div>
+                                        <div class="mb-2">
+                                            @if ($transaction->source_type == App\Models\Transaction::$SOURCE_TYPE_UPLOADED
+                                            ||
+                                            $transaction->source_type ==
+                                            "Uploaded")
+                                            {!! QrCode::size(200)->generate($transaction->rcn_no . "|" .
+                                            $transaction->vehicleR->name . "|") !!}
+                                            @else
+                                            {!! DNS1D::getBarcodeHTML('4546435345', 'UPCA',3,100) !!}
+                                            @endif
+
+                                        </div>
 
                                         <table style="width: 100%">
                                             <tbody>
@@ -224,7 +232,7 @@
                                                         <div class="font-weight-bold">Customs Declaration #:</div>
                                                     </td>
                                                     <td style="text-align: right">
-                                                        <div>IM400367020</div>
+                                                        <div>:</div>
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -398,15 +406,15 @@
                                 <h4 class="mb-2">REMARKS & INSTRUCTIONS</h4>
 
                                 <div>
-                                    DELIVER TO CLIENT: BREWERIES KISUMU SIP CALL: 0714139716
+                                    DELIVER TO CLIENT: 
                                 </div>
                                 <div>&nbsp;</div>
                                 <div>
-                                    RETURN EMPTY ICD
+                                    
                                 </div>
                                 <div>&nbsp;</div>
                                 <div>
-                                    SEAL - H2815647/00000012/D265665/ECTS-5858
+                                    SEAL 
                                 </div>
                             </td>
                             <td>
@@ -415,6 +423,7 @@
                                         <div class="col-sm-3">Invoice #: </div>
                                         <div class="col-sm-9">
                                             <div style="border-bottom: 1px dotted black; width: 80%">&nbsp;
+                                            {{ @$transaction->transactionInvoice->invoice_number}}
                                             </div>
                                         </div>
                                     </div>
@@ -442,7 +451,7 @@
             <tbody>
                 <tr>
                     <td>BOLLORE</td>
-                    <td style="text-align: right">For more, please contact Bollore support at +254712345678</td>
+                    <td style="text-align: right">This is a system generated document. Time {{ date('Y-m-d H:i:s')}}</td>
                 </tr>
             </tbody>
         </table>

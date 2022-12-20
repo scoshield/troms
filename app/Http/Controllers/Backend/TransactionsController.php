@@ -853,15 +853,15 @@ class TransactionsController extends Controller
 
         if(request('status'))    
         {
-            $recovery_invoices = RecoveryInvoice::with(['invoice.rcns' => function($query) use ($level){
+            $recovery_invoices = RecoveryInvoice::whereHas('invoice.rcns', function($query) use ($level){
                 $query->whereIn("transactions.department_code", $level["departments"]);
-            }])
+            })
             ->filter(request()->all())->latest()->paginate(20); 
         }else{
 
-            $recovery_invoices = RecoveryInvoice::with(['invoice.rcns' => function($query) use ($level){
+            $recovery_invoices = RecoveryInvoice::whereHas('invoice.rcns', function($query) use ($level){
                 $query->whereIn("transactions.department_code", $level["departments"]);            
-            }])
+            })
             ->whereIn("recovery_invoices.status", ["partially_approved"])
             ->filter(request()->all())->latest()->paginate(20);   
             
@@ -872,6 +872,14 @@ class TransactionsController extends Controller
         if(request('status') == 'rejected')
         {
             return view('backend.trx.rejected_invoice', compact('recovery_invoices', 'levels'));
+        }
+
+        if (request('download') == 1) {      
+            $view = view('backend.trx.pending_export',
+                compact('recovery_invoices'));   
+
+                return Excel::download(new ValidExports($view),  ' Pending invoices report ' . date('Y-m-h H:i:s') . '.csv');
+
         }
 
         return view('backend.trx.recovery_invoice', compact('recovery_invoices', 'levels'));

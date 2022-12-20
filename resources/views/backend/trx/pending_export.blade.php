@@ -1,57 +1,4 @@
-@extends('backend.layouts.app')
-
-@section('title', __('Recovery Invoices'))
-
-@section('breadcrumb-links')
-{{-- @include('backend.auth.user.includes.breadcrumb-links')--}}
-@endsection
-
-@section('content')
-<x-backend.card>
-    <x-slot name="header">
-        @lang('Recovery Invoices')
-    </x-slot>
-    <x-slot name="headerActions">
-        <x-utils.link icon="c-icon cil-plus" class="card-header-action" href="{{ url('admin/rcns/recovery-invoices?download=1') }}"
-            :text="__('Export')" />
-    </x-slot>
-
-    <x-slot name="body">
-        <div>
-            <form action="{{ route('admin.rcns.recovery-invoices')}}" method="GET">
-                @csrf
-                <div class="row">
-                    <div class="col-sm-3">
-                        <div class="mb-3">
-                            <input class="form-control" type="text" name="search"
-                                placeholder="Search by:  invoice_number, tracking no">
-                        </div>
-                    </div>
-
-                    @if(!(request()->has('rejected') && request('rejected')))
-                    <!-- <div class="col-sm-2">
-                        <select class=" js-states form-control" name="status">
-                            <option value="Select">Filter by status</option>
-                            <option value="pending">Pending</option>
-                            <option value="approved">Approved</option>
-                            <option value="partially_approved">Partially approved</option>
-                            <option value="rejected">Rejected</option>
-                        </select>
-                    </div> -->
-                    @endif
-
-                    <div class="col-sm-3">
-                        <div>
-                            <button type="submit" class="btn btn-primary">filter</button>
-                            <button name="clear" type="input" value="true" class="btn btn-primary">clear</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-
-
-        <table class="table table-hover table-striped table-sm">
+<table class="table table-hover table-striped table-sm">
             <tr>
                 <th>#</th>
                 <th>Booking Date</th>
@@ -122,9 +69,3 @@
             </tr>
             @endforeach
         </table>
-        <div>
-            {{ $recovery_invoices->links() }}
-        </div>
-    </x-slot>
-</x-backend.card>
-@endsection
