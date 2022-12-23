@@ -84,8 +84,14 @@
                 :text="__('Invoice Reports')" />
                 <ul class="c-sidebar-nav-dropdown-items">
                     <li class="c-sidebar-nav-item">
+                        <x-utils.link :href="route('admin.transactions.invoices-report')" class="c-sidebar-nav-link"
+                            :text="__('All Invoices')"
+                            icon="c-sidebar-nav-icon cil-speedometer"
+                            :active="activeClass(Route::is('admin.transactions.invoices-report'), 'c-active')" />
+                    </li>
+                    <li class="c-sidebar-nav-item">
                         <x-utils.link :href="route('admin.transactions.report')" class="c-sidebar-nav-link"
-                            :text="__('Valid Invoices')"
+                            :text="__('Fully Approved Invoices')"
                             icon="c-sidebar-nav-icon cil-speedometer"
                             :active="activeClass(Route::is('admin.transactions.report'), 'c-active')" />
                     </li>

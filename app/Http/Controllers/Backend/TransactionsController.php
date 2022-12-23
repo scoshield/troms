@@ -38,6 +38,14 @@ class TransactionsController extends Controller
         // $permitted = 
         $transactions = Transaction::filter(request()->all())->latest()->paginate(20);
 
+        if (request('download') == 1) {      
+            $view = view('backend.trx.list_export',
+                compact('transactions'));   
+
+                return Excel::download(new ValidExports($view),  ' RCNs report ' . date('Y-m-h H:i:s') . '.csv');
+
+        }
+
         return view('backend.trx.list', compact("transactions"));
     }
 
@@ -282,7 +290,8 @@ class TransactionsController extends Controller
                     "agent_destination" => 0,
                     "carrier" => 0,
                     "shipper" => 0,
-                    "consignee" => request("transporter"),
+                    "carrier" => request("transporter"),
+                    "consignee" => 0,
                     "vehicle" => 0,
                     "date" => date("Y-m-d"),
                     "tracking_no" => 0,
@@ -810,6 +819,32 @@ class TransactionsController extends Controller
         return view('backend.trx.invoices', compact('invoices'));
     }
 
+    public function allInvoices()
+    {
+        $invoices = TransactionInvoice::whereHas('rcns')
+                    // ->whereNull('invoice_id') 
+                    // ->orWhereIn('status', ['rejected', 'pending'])
+                    ->filter(request()->all())->latest()->paginate(20);
+
+        // $invoices->when(request('download') != 1, function($query) {
+        //     $query->paginate(20);
+        // });
+
+        if (request('download') == 1) {      
+
+            // $invoices = TransactionInvoice::whereHas('rcns')                  
+            //         ->filter(request()->all());
+
+            $view = view('backend.trx.all_invoices_export',
+                compact('invoices'));   
+
+                return Excel::download(new ValidExports($view),  ' Invoice report ' . date('Y-m-h H:i:s') . '.csv');
+
+        }           
+      
+        return view('backend.trx.all_invoices', compact('invoices'));
+    }
+
     public function editInvoice($id)
     {
         $invoice = TransactionInvoice::find($id);
@@ -856,6 +891,7 @@ class TransactionsController extends Controller
             $recovery_invoices = RecoveryInvoice::whereHas('invoice.rcns', function($query) use ($level){
                 $query->whereIn("transactions.department_code", $level["departments"]);
             })
+            // ->where('')
             ->filter(request()->all())->latest()->paginate(20); 
         }else{
 
@@ -863,6 +899,7 @@ class TransactionsController extends Controller
                 $query->whereIn("transactions.department_code", $level["departments"]);            
             })
             ->whereIn("recovery_invoices.status", ["partially_approved"])
+            ->where("recovery_invoices.level", "<=", $level['weight'])
             ->filter(request()->all())->latest()->paginate(20);   
             
         }

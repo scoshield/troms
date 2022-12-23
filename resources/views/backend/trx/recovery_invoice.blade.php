@@ -89,10 +89,16 @@
                             <a class="dropdown-item"
                                 href="{{ route('admin.rcns.recovery-invoices.view', $recovery_invoice->id )}}">View
                             </a>
+                            @if($logged_in_user->hasAllAccess() || $logged_in_user->can('admin.access.rcns.transfer_invoice'))
+                                <a class="dropdown-item"
+                                    href="{{ route('admin.transactions.transfer_invoice', $recovery_invoice->invoice->id) }}">
+                                    Transfer Invoice
+                                </a>
+                            @endif
                         </div>
                     </div>
                 </td>
-                <td>{{ Carbon\Carbon::parse(@$recovery_invoic->invoice->created_at)->format('d/m/Y')}}</td>
+                <td>{{ Carbon\Carbon::parse(@$recovery_invoice->invoice->created_at)->format('d/m/Y')}}</td>
                 <td>{{ @$recovery_invoice->invoice->invoice_number }}</td>
                 <td>{{ Carbon\Carbon::parse(@$recovery_invoice->invoice->invoice_date)->format('d/m/Y')}}</td>
                 <td>
@@ -107,8 +113,16 @@
                     @endforeach</td>
                 <td>{{ number_format(@$recovery_invoice->invoice->invoice_amount, 2) }}</td>
                 <td>{{ @$recovery_invoice->invoice->currency->symbol }}</td>
-                <td>Dept</td>
-                <td>{{ @$recovery_invoice->approvalLogs->last()->weight }}</td>
+                <td>
+                        @foreach(@$recovery_invoice->invoice->rcns as $rcn)
+                            {{ @$rcn->department->name }} <br/>
+                        @endforeach
+                </td>
+                <td>
+                    @php $level = @$recovery_invoice->level @endphp
+                    {{ App\Models\ApprovalLevel::APPROVAL_WEIGHTS[@$level] }}
+
+                </td>
                 <td>{{Carbon\Carbon::parse($recovery_invoice->invoice->created_at)->diffForHumans()}}</td>
                 <td>
                     @if($recovery_invoice->status == App\Models\RecoveryInvoiceStatus::APPROVED)

@@ -18,12 +18,11 @@
         @lang('RCNs')
     </x-slot>
 
-    @if ($logged_in_user->hasAllAccess())
+    
     <x-slot name="headerActions">
-        <x-utils.link icon="c-icon cil-plus" class="card-header-action" :href="route('admin.transactions.upload')"
-            :text="__('Upload RCNs')" />
+        <x-utils.link icon="c-icon cil-plus" class="card-header-action" href="{{request()->fullUrlWithQuery(['download'=>1])}}"
+            :text="__('Export')" />
     </x-slot>
-    @endif
 
     <x-slot name="body">
 
@@ -40,12 +39,12 @@
                     <div class="col-sm-2">
                         <select class=" js-states form-control" name="status">
                             <option value="Select">Filter by status</option>
-                            <option value="0">Pending</option>
-                            <option value="1">Invoice Attached</option>
-                            <option value="3">Invoice Amount Mismatch</option>
-                            <option value="4">Partially Approved</option>
-                            <option value="5">Approved</option>
-                            <option value="6">Cancelled</option>
+                            <option value="0" @if(request("status")==0) selected @endif>Pending</option>
+                            <option value="1" @if(request("status")==1) selected @endif>Invoice Attached</option>
+                            <option value="3" @if(request("status")==3) selected @endif>Invoice Amount Mismatch</option>
+                            <option value="4" @if(request("status")==4) selected @endif>Partially Approved</option>
+                            <option value="5" @if(request("status")==5) selected @endif>Approved</option>
+                            <option value="6" @if(request("status")==6) selected @endif>Cancelled</option>
                         </select>
                     </div>
                     <div class="col-sm-2">
@@ -171,7 +170,7 @@
         </table>
 
         <div>
-            {{ $transactions->links() }}
+            {{$transactions->withQueryString()->links();}}
         </div>
     </x-slot>
 </x-backend.card>

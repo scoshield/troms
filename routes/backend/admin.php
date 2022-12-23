@@ -56,6 +56,12 @@ Route::group(['middleware' => 'permission:admin.access.dashboard'], function () 
             $trail->push(__('Transactions Report'), route('admin.transactions.report'));
         })->middleware('permission:admin.access.rcns.reports');
 
+    Route::get('transactions/all-invoices', [TransactionsController::class, 'allInvoices'])
+        ->name('transactions.invoices-report')
+        ->breadcrumbs(function (Trail $trail) {
+            $trail->push(__('All Invoices Report'), route('admin.transactions.invoices-report'));
+        })->middleware('permission:admin.access.rcns.reports');
+
     Route::get('transactions/invalid-report', [TransactionsController::class, 'invalidInvoicesReport'])
         ->name('transactions.invalid-report')
         ->breadcrumbs(function (Trail $trail) {

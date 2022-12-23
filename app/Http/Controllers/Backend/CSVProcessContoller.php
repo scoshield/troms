@@ -114,7 +114,7 @@ class CSVProcessContoller extends Controller
                 "consignee" => $consignee->id,
                 "vehicle" => $vehicle->id,
                 "date" => $slugged["loading_date"] ? Carbon::createFromFormat("d/m/Y", $slugged["loading_date"]) : null,
-                "tracking_no" => $slugged["tracking_file_no"], // good
+                "tracking_no" => $slugged["tracking_file_no"], // good to pay
                 "marks" => "Initial import",
                 "cargo_type" => 1,
                 "cargo_desc" => "",
@@ -124,13 +124,14 @@ class CSVProcessContoller extends Controller
                 "rcn_no" => $slugged["rcn_no"],
                 "purchase_order_no" => $slugged["purchasing_order_no"],
                 "customs_no" => $slugged["parcel_seal_no"],
-                "notes" => $slugged["po_instructions"],
+                "notes" => $slugged["po_instructions"], //change to RCN instructions on upload
                 "status" => $slugged["rcn_status"],
                 "amount" => $slugged["estimated_rate"],
                 "department_code" => $slugged["department_code"],
                 "department_com" => $slugged["com"],
                 "currency_id"=>$currency->id,
                 "source_type" => Transaction::$SOURCE_TYPE_UPLOADED
+                // upload container sizes
             ]);
        }
     }
@@ -138,7 +139,7 @@ class CSVProcessContoller extends Controller
     public function checkUploadedFileProperties($extension, $fileSize)
     {
         $valid_extension = array("csv", "xlsx"); //Only want csv and excel files
-        $maxFileSize = 2000097152; // Uploaded file size limit is 2mb
+        $maxFileSize = 2000097152; // Uploaded file size limit is 20mb
         if (in_array(strtolower($extension), $valid_extension)) {
             if ($fileSize <= $maxFileSize) {
             } else {

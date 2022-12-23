@@ -26,26 +26,11 @@
     @endif
 
     <x-slot name="body">
-
-        <!-- <div>
-            <form action="{{ route('admin.transactions.report')}}" method="GET">
-                @csrf
-                <div class="row">
-                    <div class="col-sm-3">
-                        <div class="mb-3">
-                            <input class="form-control" type="text" name="search"
-                                placeholder="Search by: rcn no, shipper, carrier, tracking no">
-                        </div>
-                    </div>                    
-                    <div class="col-sm-3">
-                        <div>
-                            <button type="submit" class="btn btn-primary">filter</button>
-                            <button name="clear" type="input" value="true" class="btn btn-primary">clear</button>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div> -->
+        
+    <div class="row">
+        <div class="col-md-12">
+            
+       
 
         <table class="table table-hover table-striped">
             <tr>
@@ -99,8 +84,10 @@
                     @endif
                 </td>
                 <td>{{ $trx->file_number }}</td>
-                <td>
-                    <span style="color: gray">{{ @$trx->invoice->rcns[0]->carrierR->transporter_name }}</span>
+                <td>                    
+                    @foreach($trx->rcns as $rcn)
+                        <span>{{@$rcn->carrierR->transporter_name}}</span> <br/>
+                    @endforeach
                 </td>
                 <td>
                     <span style="font-weight: 400">{{ number_format($trx->invoice_amount, 2) }}</span>
@@ -108,11 +95,7 @@
                 <td>{{ @$trx->currency->symbol}} </td>
                 <td>
                 <span class="badge badge-danger">{{ @$trx->comments}}</span>
-                </td>
-                <!-- <td>
-                    <span style="font-weight: 500">{{ $trx->level }}</span>
-                </td> -->
-                <!-- <td>{{ \Carbon\Carbon::parse($trx->created_at)->diffForHumans() }}</td> -->
+                </td>                
                 <td>
                     <a href="#" class="badge badge-info">{{$trx->status}}</a>    
                     @foreach($trx->rcns as $rcn)
@@ -125,6 +108,8 @@
             @endforeach
         </table>
 
+        </div>
+    </div>
         <div>
             {{ $transactions->links() }}
         </div>
