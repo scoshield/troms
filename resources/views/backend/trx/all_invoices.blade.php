@@ -29,7 +29,7 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-2">
+                    <div class="col-sm-3">
                         <select class=" js-states form-control" name="status">
                             <option value="Select">Filter by status</option>
                             <option value="0">Pending</option>
@@ -42,6 +42,16 @@
                             <button type="submit" class="btn btn-primary">filter</button>
                             <button name="clear" type="input" value="true" class="btn btn-primary">clear</button>
                         </div>
+                    </div>
+
+                    <div class="col-sm-2">
+                        <select class="js-states form-control" onchange="window.location = this.options[this.selectedIndex].value" name="limit">
+                            <option value="{{request()->fullUrlWithQuery(['limit'=>20])}}">20</option>
+                            <option value="{{request()->fullUrlWithQuery(['limit'=>100])}}">100</option>
+                            <option value="{{request()->fullUrlWithQuery(['limit'=>250])}}">250</option>                          
+                            <option value="{{request()->fullUrlWithQuery(['limit'=>500])}}">500</option>                          
+                            <option value="{{request()->fullUrlWithQuery(['limit'=>1000])}}">All</option>                          
+                        </select>
                     </div>
                 </div>
             </form>

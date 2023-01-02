@@ -179,6 +179,7 @@ class TransactionsController extends Controller
                 $status = session("status", true);
                 return redirect()->back()->with("flash_danger", "RCN no: " . request("rcn_no") . " not found. Continue and add transporter name? <a href='".route("admin.transactions.attach-invoice")."?rcns=".request('rcn_no').":0"."&status=".$status."'> Yes </a>")->withInput();
             }            
+            
             // $invoice = $rcn->invoice_id;
             $current_rcns = request('rcns') ? request('rcns') . "," : "";
             $cleaned_rcns = $this->cleanRcnQueryString($current_rcns);
@@ -248,6 +249,17 @@ class TransactionsController extends Controller
             return redirect()
                 ->to(route('admin.transactions.attach-invoice') . '?rcns=' . request('rcns'))
                 ->with("flash_danger", "Please attach at least one RCN")->withInput();
+        }
+
+        foreach($rcns as $rcn)
+        {
+            
+            $r = Transaction::where("rcn_no", $rcn[0])->first(); 
+            // return "file number is: ".request('file_number')." and RCN file number is ".$r->tracking_no;
+            if($r->tracking_no != request('file_number'))
+            {
+                return redirect()->back()->with("flash_danger", "File number mismatch. Please verify the RCN file number for ".$rcn[0]." and proceed.")->withInput(); 
+            }
         }
 
         request()->validate([
@@ -820,20 +832,13 @@ class TransactionsController extends Controller
     }
 
     public function allInvoices()
-    {
-        $invoices = TransactionInvoice::whereHas('rcns')
-                    // ->whereNull('invoice_id') 
-                    // ->orWhereIn('status', ['rejected', 'pending'])
-                    ->filter(request()->all())->latest()->paginate(20);
-
-        // $invoices->when(request('download') != 1, function($query) {
-        //     $query->paginate(20);
-        // });
+    {   
+        $limit = request('limit') ? request('limit') : 20;
+        // return $limit;
+        $invoices = TransactionInvoice::whereHas('rcns')                    
+                    ->filter(request()->all())->latest()->paginate($limit);
 
         if (request('download') == 1) {      
-
-            // $invoices = TransactionInvoice::whereHas('rcns')                  
-            //         ->filter(request()->all());
 
             $view = view('backend.trx.all_invoices_export',
                 compact('invoices'));   

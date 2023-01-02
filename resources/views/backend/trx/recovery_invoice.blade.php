@@ -109,7 +109,7 @@
                 <td>{{ $recovery_invoice->invoice->file_number }}</td>
                 <td>
                     @foreach(@$recovery_invoice->invoice->rcns as $rcn)
-                            {{ $rcn->shipperR->name }}
+                            {{ $rcn->carrierR->transporter_name }}
                     @endforeach</td>
                 <td>{{ number_format(@$recovery_invoice->invoice->invoice_amount, 2) }}</td>
                 <td>{{ @$recovery_invoice->invoice->currency->symbol }}</td>

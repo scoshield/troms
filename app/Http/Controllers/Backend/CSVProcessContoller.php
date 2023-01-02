@@ -115,6 +115,7 @@ class CSVProcessContoller extends Controller
                 "vehicle" => $vehicle->id,
                 "date" => $slugged["loading_date"] ? Carbon::createFromFormat("d/m/Y", $slugged["loading_date"]) : null,
                 "tracking_no" => $slugged["tracking_file_no"], // good to pay
+                "file_no" => $slugged["tracking_file_no"], // good to pay
                 "marks" => "Initial import",
                 "cargo_type" => 1,
                 "cargo_desc" => "",
@@ -125,6 +126,7 @@ class CSVProcessContoller extends Controller
                 "purchase_order_no" => $slugged["purchasing_order_no"],
                 "customs_no" => $slugged["parcel_seal_no"],
                 "notes" => $slugged["po_instructions"], //change to RCN instructions on upload
+                "rcn_instructions" => $slugged["rcn_instructions"], //change to RCN instructions on upload
                 "status" => $slugged["rcn_status"],
                 "amount" => $slugged["estimated_rate"],
                 "department_code" => $slugged["department_code"],

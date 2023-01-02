@@ -6,6 +6,10 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
     integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A=="
     crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css" rel="stylesheet"
+    type="text/css" />
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 @endpush
 
 @section('breadcrumb-links')
@@ -18,12 +22,46 @@
         @lang('REPORT: FULLY APPROVED INVOICES')
     </x-slot>
 
-    @if ($logged_in_user->can('admin.access.rcns.reports'))
     <x-slot name="headerActions">
-        <x-utils.link icon="c-icon cil-plus" class="card-header-action" href="{{ url('admin/transactions/report?download=1') }}"
-            :text="__('Export')" />
+            @if ($logged_in_user->can('admin.access.rcns.reports'))
+                <x-utils.link icon="c-icon cil-plus" class="card-header-action" href="{{ url('admin/transactions/report?download=1') }}"
+                    :text="__('Export')" />
+            @endif
+
+            <div class="modal fade" id="approveModal" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Invoice Final Processing Dialog</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">                           
+                            <form method="POST"
+                                action="{{ route('admin.transactions.approve-recovery-invoice', 1)}}">
+                                @csrf()                                
+
+                                <div class="form-group mt-4">
+                                    <label for="date">Invoice Payment Date </label>
+                                    <div class="datepicker input-group date" data-date-format="mm-dd-yyyy">
+                                        <input class="form-control" type="text" name="invoice_date" value="{{ old('invoice_date') }}" readonly />
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-form-label">Comments:</label>
+                                    <textarea class="form-control" name="date"></textarea>
+                                </div>
+                                <!-- <button type="submit" name="type" value="approve" class="btn btn-primary">FINALIZE</button>                                 -->
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
     </x-slot>
-    @endif
 
     <x-slot name="body">
 
@@ -36,25 +74,7 @@
                             <input class="form-control" type="text" name="search"
                                 placeholder="Search by: rcn no, shipper, carrier, tracking no">
                         </div>
-                    </div>
-                    <!-- <div class="col-sm-2">
-                        <select class=" js-states form-control" name="status">
-                            <option value="Select">Filter by status</option>
-                            <option value="pending">Pending</option>
-                            <option value="1">Invoice Attached</option>
-                            <option value="3">Invoice Amount Mismatch</option>
-                            <option value="partially_approved">Partially Approved</option>
-                            <option value="approved">Approved</option>
-                            <option value="rejected">Cancelled</option>
-                        </select>
-                    </div> -->
-                    <!-- <div class="col-sm-2">
-                        <select class=" js-states form-control" name="type">
-                            <option value="Select">Filter by type</option>
-                            <option value="manual">Manual</option>
-                            <option value="upload">Upload</option>
-                        </select>
-                    </div> -->
+                    </div>                  
                     <div class="col-sm-3">
                         <div>
                             <button type="submit" class="btn btn-primary">filter</button>
@@ -155,12 +175,17 @@
                         </td>
                         <td>{{ \Carbon\Carbon::parse($trx->created_at)->diffInDays(@$trx->recoveryInvoice->approvalLogs->last()->created_at) }}</td>
                         <td>
-                            <a href="#" class="badge badge-info" style="text-transform: uppercase">{{@$trx->recoveryInvoice->status}}</a>                 
+                            <a href="#" class="" style="text-transform: uppercase">&#9745</a>                 
 
                         </td>
-                        <td><a href="{{ route('admin.recovery_invoice.print', $trx->recoveryInvoice->id)}}">
-                            <button class="btn btn-sm btn-primary">@lang("Print")</button>
-                        </a></td>
+                        <td>
+                            <a href="{{ route('admin.recovery_invoice.print', $trx->recoveryInvoice->id)}}">
+                            &#9851
+                        </a>/ 
+                        <a href="#" data-toggle="modal"
+                            data-target="#approveModal">&#9931</a>
+                    
+                        </td>
                     </tr>
                     @endforeach
                 </table>
@@ -174,3 +199,23 @@
     </x-slot>
 </x-backend.card>
 @endsection
+
+@push("after-scripts")
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+    $('.').select2();
+    });
+
+    $(function () {
+      $(".datepicker").datepicker({ 
+            autoclose: true, 
+            todayHighlight: true
+      }).datepicker('update', new Date());
+    });
+</script>
+<script>
+
+</script>
+@endpush

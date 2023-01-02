@@ -36,7 +36,7 @@ class Transaction extends Model
         "vehicle", "date", "tracking_no", "marks", "cargo_type", "cargo_desc", "quantity",
         "weight", "remarks",  "rcn_no", "customs_no", "notes", "status", "amount", "source_type",
         "invoice_id", "file_no", "trailer_no", "container_no", "agreed_rate", "currency_id",
-        "recovery_invoice_id", "department_code", "department_com", "purchase_order_no"
+        "recovery_invoice_id", "department_code", "department_com", "purchase_order_no", "rcn_instructions"
     ];
 
     public function vehicleR()

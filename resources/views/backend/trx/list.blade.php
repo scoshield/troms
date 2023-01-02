@@ -131,7 +131,7 @@
                     <span style="color: gray">{{ @$trx->shipperR->name }}</span><br />
                 </td>
                 <td>
-                    <span style="font-weight: 500">{{ $trx->consigneeR->name }}</span><br />
+                    <span style="font-weight: 500">{{ @$trx->consigneeR->name }}</span><br />
                     <span style="color: gray">{{ @$trx->tracking_no }}</span><br />
                 </td>
                 <td>

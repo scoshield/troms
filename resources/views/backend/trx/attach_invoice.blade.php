@@ -177,7 +177,8 @@
                 <div class="col-sm-4 mt-4 alert alert-warning">
                     <label for="exampleFormControlInput1" class="form-label">Transporter</label>
                     <select name="transporter" class="form-control search-slt">
-                        @foreach(App\Models\Carrier::all() as $trx)
+                        <option value="" selected>Select Transporter</option>
+                        @foreach(App\Models\Carrier::orderBy('transporter_name', 'asc')->get() as $trx)
                             <option value="{{$trx->id}}">{{$trx->transporter_name}}</option>
                         @endforeach
                     </select>
