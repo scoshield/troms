@@ -88,10 +88,10 @@
                                 Status
                             </span>
                         </th>
-                        <th>Action</th>
+                        <th>Paid On (Date)</th>
                     </tr>
                     @foreach($transactions as $trx)
-                    <tr>
+                    <tr @if($trx->recoveryInvoice->invoiced_date) style="background-color: #c4e3c4;" @endif>
                         <td>
                             <div class="dropdown show">
                                 <span>{{ $trx->id }}</span>
@@ -145,9 +145,16 @@
 
                         </td>
                         <td>
-                            <a href="{{ route('admin.recovery_invoice.print', $trx->recoveryInvoice->id)}}">
-                            &#9851
-                        </a>                    
+                            <a href="{{ route('admin.recovery_invoice.print', $trx->recoveryInvoice->id)}}" title="Printed: {{$trx->recoveryInvoice->doc_printed}}">
+                            Reprint
+                        </a>/ 
+                        @if($trx->recoveryInvoice->invoiced_date)
+                            <span>{{ \Carbon\Carbon::parse(@$trx->recoveryInvoice->invoiced_date)->format('d/m/Y') }}</span>
+                        @else
+                            <a href="{{ route('admin.rcns.recovery-invoices.view', $trx->recoveryInvoice->id) }}">Finalize</a>
+                        @endif
+
+                    
                         </td>
                     </tr>
                     @endforeach

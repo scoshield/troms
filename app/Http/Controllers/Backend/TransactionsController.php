@@ -251,14 +251,16 @@ class TransactionsController extends Controller
                 ->with("flash_danger", "Please attach at least one RCN")->withInput();
         }
 
-        foreach($rcns as $rcn)
+        if(!request('transporter'))
         {
-            
-            $r = Transaction::where("rcn_no", $rcn[0])->first(); 
-            // return "file number is: ".request('file_number')." and RCN file number is ".$r->tracking_no;
-            if($r->tracking_no != request('file_number'))
+            foreach($rcns as $rcn)
             {
-                return redirect()->back()->with("flash_danger", "File number mismatch. Please verify the RCN file number for ".$rcn[0]." and proceed.")->withInput(); 
+                
+                $r = Transaction::where("rcn_no", $rcn[0])->first(); 
+                if($r->tracking_no != request('file_number'))
+                {
+                    return redirect()->back()->with("flash_danger", "File number mismatch. Please verify the RCN file number for ".$rcn[0]." and proceed.")->withInput(); 
+                }
             }
         }
 
@@ -583,6 +585,41 @@ class TransactionsController extends Controller
                 ->with("flash_success", "Recovery invoice : " . $recovery_invoice->invoice_number . " has been ".$recovery_invoice->status." with comments ".request("comments"));
     }
 
+
+    public function recoveryInvoiceFinalize($recovery_id)
+    {
+        $recovery_invoice = RecoveryInvoice::find($recovery_id);
+
+        // return request();
+
+        if (!$recovery_invoice) {
+            return redirect()
+                ->back()
+                ->with("flash_danger", "Recovery Invoice not found");
+        }
+
+        $approver = ApprovalLevel::where("user_id", auth()->user()->id)->first();
+        if (!$approver) {
+            return redirect()
+                ->back()
+                ->with("flash_danger", "You are not set as an approver");
+        }
+
+        $validated = request()->validate([
+            "invoiced_date" => "required",
+            "comments" => "required"
+        ]);
+
+        $recovery_invoice->invoiced_date = Carbon::createFromFormat("m-d-Y", request("invoiced_date"));
+        $recovery_invoice->final_user = auth()->user()->id;
+        $recovery_invoice->final_comments = request('comments');
+        $recovery_invoice->save();
+       
+        return redirect()
+                ->back()
+                ->with("flash_success", "Invoice : " . $recovery_invoice->invoice_number . " has been finalized");
+    }
+
     public function saveTransferInvoice($invoice_id)
     {
         $invoice = TransactionInvoice::find($invoice_id);
@@ -850,6 +887,29 @@ class TransactionsController extends Controller
         return view('backend.trx.all_invoices', compact('invoices'));
     }
 
+    public function submittedInvoices()
+    {   
+        $limit = request('limit') ? request('limit') : 20;
+        // return $limit;
+        $transactions = TransactionInvoice::whereHas('recoveryInvoice', function($query){
+            $query->whereIn('status', ['approved']);
+            $query->where('doc_printed', '>', 0);
+        })->whereHas('rcns', function($query){
+            $query->where('purchase_order_no', '!=', null);
+        })->filter(request()->all())->latest()->paginate(20);
+        // return response()->json($transactions);
+
+        if (request('download') == 1) {      
+            $view = view('backend.trx.report_export',
+                compact('transactions'));   
+
+                return Excel::download(new ValidExports($view),  ' Valid invoices report ' . date('Y-m-h H:i:s') . '.csv');
+
+        }         
+      
+        return view('backend.trx.submitted_invoices', compact('transactions'));
+    }
+
     public function editInvoice($id)
     {
         $invoice = TransactionInvoice::find($id);
@@ -954,6 +1014,10 @@ class TransactionsController extends Controller
             // 'qrcode' => $qrcode,
             'levels' => $levels
         ])->setPaper('a4', 'portrait');
+        
+        $num = $recovery_invoice->doc_printed;
+        $recovery_invoice->doc_printed = $num + 1;
+        $recovery_invoice->save();
 
         return $pdf->stream('recovery_invoice -' . $recovery_invoice->invoice_number . '.pdf');
 
@@ -967,6 +1031,7 @@ class TransactionsController extends Controller
     {
         $transactions = TransactionInvoice::whereHas('recoveryInvoice', function($query){
             $query->whereIn('status', ['approved']);
+            $query->where('doc_printed', '=', 0);
         })->whereHas('rcns', function($query){
             $query->where('purchase_order_no', '!=', null);
         })->filter(request()->all())->latest()->paginate(20);

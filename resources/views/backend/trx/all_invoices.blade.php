@@ -58,75 +58,89 @@
         </div>
 
 
-        <table class="table table-hover table-striped">
+        <table class="table table-hover table-striped table-sm">
             <tr>
                 <th>#</th>
-                <th>Invoice No</th>
-                <th>Invoice Amt.</th>
-                <th>Invoice Date</th>
-                <th>
-                    File No.
-                </th>
-                <th>RCN(s)</th>
-                <th>Recovery Invoice</th>
+                <th>Booking Date</th>
+                <th>Invoice. no.</th>
+                <th>Invoice Date.</th>
+                <th>RCN's</th>
+                <th>File No.</th>
+                <th>Transporter</th>
+                <th>Amount</th>
+                <th>Currency</th>
+                <th>Department</th>
+                <th>Level</th>
+                <th>Period</th>
                 <th>Status</th>
-                <th>Dept.</th>
             </tr>
             @foreach($invoices as $invoice)
-            
-                <tr>
-                    <td>
-                        <div class="dropdown show">
-                            <span>{{ $loop->iteration }}</span>
-                            <a class="btn  dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
-                                    xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 302 302"
-                                    style="enable-background:new 0 0 302 302;" xml:space="preserve">
-                                    <g>
-                                        <rect y="36" width="302" height="30" />
-                                        <rect y="236" width="302" height="30" />
-                                        <rect y="136" width="302" height="30" />
-                                    </g>
-                                </svg>
-                            </a>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            @if($invoice->recoveryInvoice)
-                                <a class="dropdown-item"
-                                    href="{{ route('admin.rcns.recovery-invoices.view', $invoice->recoveryInvoice->id )}}">Record Trail
-                                </a> 
-                            @else
-
-                            @endif
-                        </div>
-                        </div>
-                    </td>
-                    <td>{{ $invoice->invoice_number }}</td>
-                    <td>{{$invoice->currency->symbol}} {{ number_format($invoice->invoice_amount, 2) }}</td>
-                    <td>{{ $invoice->invoice_date }}</td>
-                    <td>
-                        {{ $invoice->file_number }}
-                    </td>
-                    <td>
-                        @if(count($invoice->rcns) > 0)
-                            @foreach($invoice->rcns as $rcn)
-                                <span>{{$rcn->rcn_no}} </span> (@if(!$rcn->purchase_order_no)) <span class="badge badge-danger">No P.O No</span> @else {{$rcn->purchase_order_no}} @endif)<br/>
-                            @endforeach
+            <tr @if($invoice->level == @auth()->user()->approvalLevel->weight && $invoice->status != 'approved') style="background-color: #00ff3233;" @endif>
+                <td>
+                    <div class="dropdown show">
+                        <span>{{ $loop->iteration }}</span>
+                        <a class="btn  dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg"
+                                xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 302 302"
+                                style="enable-background:new 0 0 302 302;" xml:space="preserve">
+                                <g>
+                                    <rect y="36" width="302" height="30" />
+                                    <rect y="236" width="302" height="30" />
+                                    <rect y="136" width="302" height="30" />
+                                </g>
+                            </svg>
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                        @if($invoice->recoveryInvoice)
+                            <a class="dropdown-item"
+                                href="{{ route('admin.rcns.recovery-invoices.view', $invoice->recoveryInvoice->id )}}">Record Trail
+                            </a> 
                         @else
-                        <span class="badge badge-danger">No RCN</span>
+    
                         @endif
-                    </td>
-                    <td>@if($invoice->recoveryInvoice && @$invoice->recoveryInvoice->invoice_number != 0) {{@$invoice->recoveryInvoice->invoice_number}} @else <span class="badge badge-danger">Not Attached</span>@endif</td>
-                    <td>@if($invoice->status == 'pending') <span class="badge badge-info">Pending</span>@elseif($invoice->status == 'approved') <span class="badge badge-success">Approved</span>@else <span class="badge badge-danger">Rejected</span>@endif</td>
-                    <td>
+                        </div>
+                    </div>
+                </td>
+                <td>{{ Carbon\Carbon::parse(@$invoice->created_at)->format('d/m/Y')}}</td>
+                <td>{{ @$invoice->invoice_number }}</td>
+                <td>{{ Carbon\Carbon::parse(@$invoice->invoice_date)->format('d/m/Y')}}</td>
+                <td>
+                    @foreach(@$invoice->rcns as $rcn)
+                            {{ $rcn->rcn_no }}
+                    @endforeach
+                </td>
+                <td>{{ $invoice->file_number }}</td>
+                <td>
+                    @foreach(@$invoice->rcns as $rcn)
+                            {{ $rcn->carrierR->transporter_name }}
+                    @endforeach</td>
+                <td>{{ number_format(@$invoice->invoice_amount, 2) }}</td>
+                <td>{{ @$invoice->currency->symbol }}</td>
+                <td>
                         @foreach(@$invoice->rcns as $rcn)
                             {{ @$rcn->department->name }} <br/>
                         @endforeach
-                        @if(count(@$invoice->rcns) == 0) <span class="badge badge-danger">No Department</span> @endif
-                    </td>
-                </tr>
-                
-                @endforeach
+                </td>
+                <td>
+                    @php $level = @$invoice->level @endphp
+                    {{ App\Models\ApprovalLevel::APPROVAL_WEIGHTS[@$level] }}
+
+                </td>
+                <td>{{Carbon\Carbon::parse($invoice->created_at)->diffForHumans()}}</td>
+                <td>
+                    @if(@$invoice->recoveryInvoice->status == App\Models\RecoveryInvoiceStatus::APPROVED)
+                    <a href="#" class="badge badge-primary">Approved</a>
+                    @elseif(@$invoice->recoveryInvoice->status == App\Models\RecoveryInvoiceStatus::PARTIALLY_APPROVED)
+                    <a href="#" class="badge badge-success">Partially approved</a>
+                    @elseif(@$invoice->recoveryInvoice->status == App\Models\RecoveryInvoiceStatus::REJECTED)
+                    <a href="#" class="badge badge-success">Rejected</a>
+                    @else
+                     <p class="badge badge-danger">Not attached</p>
+                    @endif
+                </td>                
+            </tr>
+            @endforeach
         </table>
         <div>
             {{ $invoices->withQueryString()->links() }}

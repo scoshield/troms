@@ -2,6 +2,17 @@
 
 @section('title', __('Invoices'))
 
+@push('after-styles')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.2/css/all.min.css"
+    integrity="sha512-1sCRPdkRXhBV2PBLUdRb4tMg1w2YPf37qatUFeS7zlBy7jJI8Lf4VHwWfZZfpXtYSLy85pkm9GaYVYMfw5BC1A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css" rel="stylesheet"
+    type="text/css" />
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+@endpush
+
+
 @section('breadcrumb-links')
 {{-- @include('backend.auth.user.includes.breadcrumb-links')--}}
 @endsection
@@ -35,6 +46,10 @@
                     <span style="text-transform: uppercase;">{{ ucfirst(str_replace("_", " ", $recovery_invoice->status)) }}</span>
                 </button>
                 @endif
+
+                @if ($logged_in_user->can('admin.access.rcns.finalize_invoice'))
+                    <a href="#" data-toggle="modal" data-target="#approveModal"> <button class="btn btn-sm btn-info">Finalize</button> </a>
+                @endif
             
                 
                 <a href="{{ route('admin.recovery_invoice.print', $recovery_invoice->id)}}">
@@ -42,7 +57,7 @@
                 </a>
             </div>
         </div>
-        <!-- Modal -->       
+        <!-- Modal 1-->       
         <div class="modal fade" id="approveModal{{$recovery_invoice->id}}" tabindex="-1" role="dialog"
             aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -102,6 +117,44 @@
                 </div>
             </div>
         </div>
+        <!-- End Modal 1 -->
+
+        <!-- Modal 2 -->
+        <div class="modal fade" id="approveModal" tabindex="-1" role="dialog"
+                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Invoice Final Processing Dialog</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">                           
+                            <form method="POST"
+                                action="{{ route('admin.transactions.finalize-recovery-invoice', $recovery_invoice->id)}}">
+                                @csrf()                                
+
+                                <div class="form-group mt-4">
+                                    <label for="date">Invoice Payment Date </label>
+                                    <div class="datepicker input-group date" data-date-format="mm-dd-yyyy">
+                                        <input class="form-control" type="text" name="invoiced_date" value="{{ old('invoiced_date') }}" readonly />
+                                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="col-form-label">Comments:</label>
+                                    <textarea class="form-control" name="comments"></textarea>
+                                </div>
+                                <button type="submit" name="type" class="btn btn-primary">FINALIZE</button>                                
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- End Modal 2 -->
     </x-slot>
     @endif
     <?php $invoice = $recovery_invoice->invoice ?>
@@ -282,3 +335,23 @@
     </x-slot>
 </x-backend.card>
 @endsection
+
+@push("after-scripts")
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+    $('.').select2();
+    });
+
+    $(function () {
+      $(".datepicker").datepicker({ 
+            autoclose: true, 
+            todayHighlight: true
+      }).datepicker('update', new Date());
+    });
+</script>
+<script>
+
+</script>
+@endpush

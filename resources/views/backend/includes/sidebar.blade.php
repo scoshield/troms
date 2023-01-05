@@ -90,6 +90,12 @@
                             :active="activeClass(Route::is('admin.transactions.invoices-report'), 'c-active')" />
                     </li>
                     <li class="c-sidebar-nav-item">
+                        <x-utils.link :href="route('admin.transactions.submitted-report')" class="c-sidebar-nav-link"
+                            :text="__('Submitted Invoices')"
+                            icon="c-sidebar-nav-icon cil-speedometer"
+                            :active="activeClass(Route::is('admin.transactions.submitted-report'), 'c-active')" />
+                    </li>
+                    <li class="c-sidebar-nav-item">
                         <x-utils.link :href="route('admin.transactions.report')" class="c-sidebar-nav-link"
                             :text="__('Fully Approved Invoices')"
                             icon="c-sidebar-nav-icon cil-speedometer"

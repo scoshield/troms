@@ -32,6 +32,7 @@ class CarriersController extends Controller
 
         Carrier::updateOrCreate(['email' => request('email')], [
             'name' => request('name'),
+            'transporter_name' => request('name'),
             'address' => request('address'),
             'po_box' => request('po_box'),
             'country' => request('country'),

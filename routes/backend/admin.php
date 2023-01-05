@@ -62,6 +62,12 @@ Route::group(['middleware' => 'permission:admin.access.dashboard'], function () 
             $trail->push(__('All Invoices Report'), route('admin.transactions.invoices-report'));
         })->middleware('permission:admin.access.rcns.reports');
 
+    Route::get('transactions/submitted-invoices', [TransactionsController::class, 'submittedInvoices'])
+        ->name('transactions.submitted-report')
+        ->breadcrumbs(function (Trail $trail) {
+            $trail->push(__('Submitted Invoices Report'), route('admin.transactions.submitted-report'));
+        })->middleware('permission:admin.access.rcns.reports');
+
     Route::get('transactions/invalid-report', [TransactionsController::class, 'invalidInvoicesReport'])
         ->name('transactions.invalid-report')
         ->breadcrumbs(function (Trail $trail) {
@@ -135,6 +141,10 @@ Route::group(['middleware' => 'permission:admin.access.dashboard'], function () 
     Route::post('recovery-invoices/{recovery_invoice_id}/approve', [TransactionsController::class, 'recoveryInvoiceApprove'])
         ->name('transactions.approve-recovery-invoice')
         ->middleware('permission:admin.access.rcns.approve_rcn');
+
+    Route::post('recovery-invoices/{recovery_invoice_id}/finalize', [TransactionsController::class, 'recoveryInvoiceFinalize'])
+        ->name('transactions.finalize-recovery-invoice')
+        ->middleware('permission:admin.access.rcns.finalize_invoice');
 
     Route::match(['GET', 'POST'], 'invoices/{invoice_id}/attach_recovery_invoice', [TransactionsController::class, 'attachRecoveryInvoice'])
         ->name('invoices.attach_recovery_invoice')
