@@ -1029,12 +1029,16 @@ class TransactionsController extends Controller
 
     public function transactionsReport()
     {
+        $limit = 20;
+
+        if(request('download')){ $limit = 1000; }else{ $limit = 20;
+        }
         $transactions = TransactionInvoice::whereHas('recoveryInvoice', function($query){
             $query->whereIn('status', ['approved']);
             $query->where('doc_printed', '=', 0);
         })->whereHas('rcns', function($query){
             $query->where('purchase_order_no', '!=', null);
-        })->filter(request()->all())->latest()->paginate(20);
+        })->filter(request()->all())->latest()->paginate($limit);
         // return response()->json($transactions);
 
         if (request('download') == 1) {      

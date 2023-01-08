@@ -17,9 +17,8 @@
             @foreach($invoices as $invoice)
             <tr @if($invoice->level == @auth()->user()->approvalLevel->weight && $invoice->status != 'approved') style="background-color: #00ff3233;" @endif>
                 <td>
-                    <div class="dropdown show">
-                        <span>{{ $loop->iteration }}</span>                        
-                    </div>
+                    <span>{{ $loop->iteration }}</span>
+                    
                 </td>
                 <td>{{ Carbon\Carbon::parse(@$invoice->created_at)->format('d/m/Y')}}</td>
                 <td>{{ @$invoice->invoice_number }}</td>
@@ -36,14 +35,18 @@
                     @endforeach</td>
                 <td>{{ number_format(@$invoice->invoice_amount, 2) }}</td>
                 <td>{{ @$invoice->currency->symbol }}</td>
-                <td>
+                <td class="color: #000">
                         @foreach(@$invoice->rcns as $rcn)
                             {{ @$rcn->department->name }} <br/>
                         @endforeach
                 </td>
                 <td>
-                    @php $level = @$invoice->level @endphp
-                    {{ App\Models\ApprovalLevel::APPROVAL_WEIGHTS[@$level] }}
+                    @php $level = @$invoice->recoveryInvoice->level @endphp
+                    @if($level)
+                        {{ App\Models\ApprovalLevel::APPROVAL_WEIGHTS[@$level] }}
+                    @else
+                        Clerk
+                    @endif
 
                 </td>
                 <td>{{Carbon\Carbon::parse($invoice->created_at)->diffForHumans()}}</td>

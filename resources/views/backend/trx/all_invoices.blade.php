@@ -123,8 +123,12 @@
                         @endforeach
                 </td>
                 <td>
-                    @php $level = @$invoice->level @endphp
-                    {{ App\Models\ApprovalLevel::APPROVAL_WEIGHTS[@$level] }}
+                    @php $level = @$invoice->recoveryInvoice->level @endphp
+                    @if($level)
+                        {{ App\Models\ApprovalLevel::APPROVAL_WEIGHTS[@$level] }}
+                    @else
+                        Clerk
+                    @endif
 
                 </td>
                 <td>{{Carbon\Carbon::parse($invoice->created_at)->diffForHumans()}}</td>
