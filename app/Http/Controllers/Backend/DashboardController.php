@@ -35,6 +35,8 @@ class DashboardController
         $ksh_not_booked_rcn = Transaction::selectRaw("SUM(amount) as amount, COUNT(*) as booked_rcns")->where("currency_id", 119)->get();
         $usd_not_booked_rcn = Transaction::selectRaw("SUM(amount) as amount, COUNT(*) as booked_rcns")->where("currency_id", 120)->get();
 
+        $files = Transaction::selectRaw("COUNT(*) as files")->groupBy("tracking_no")->get();
+
         $transporters = Transaction::join("carriers", "transactions.carrier", "carriers.id")->selectRaw("sum(transactions.amount) amount, carriers.transporter_name")
                                 ->groupBy("carriers.transporter_name")->orderBy("amount", "desc")->limit(5)->get();
 
@@ -45,6 +47,6 @@ class DashboardController
                                 ->groupBy("start_month")
                                 ->get();
         // return $sum;
-        return view('backend.dashboard', compact('transporters', 'invoices', 'usd_approved', 'ksh_approved', 'usd_partial', 'ksh_partial', 'usd_rejected', 'ksh_rejected', 'ksh_booked_rcn', 'usd_booked_rcn', 'ksh_not_booked_rcn', 'usd_not_booked_rcn'));
+        return view('backend.dashboard', compact('transporters', 'invoices', 'files', 'usd_approved', 'ksh_approved', 'usd_partial', 'ksh_partial', 'usd_rejected', 'ksh_rejected', 'ksh_booked_rcn', 'usd_booked_rcn', 'ksh_not_booked_rcn', 'usd_not_booked_rcn'));
     }
 }

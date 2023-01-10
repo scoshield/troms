@@ -107,7 +107,7 @@
                    <table class="table table-sm table-bordered" style="width: 80%">
                         <thead>
                             <tr class="text-center rowb rowh" style="border-top: 2px solid #000">
-                                <th colspan="4">RCN STATISTICS.</th>
+                                <th colspan="4">RCN STATISTICS. </th>
                             </tr>
                             <colgroup>
                             <col>
@@ -145,7 +145,7 @@
                                 <th>TOTAL</th>
                                 <td>{{ number_format(@$usd_booked_rcn[0]['amount'] + @$usd_not_booked_rcn[0]['amount'], 2)}}</td>
                                 <td>{{ number_format(@$ksh_booked_rcn[0]['amount'] + @$ksh_not_booked_rcn[0]['amount'], 2)}}</td>
-                                <td>{{ $booked_rcns + $not_booked_rcns }}</td>
+                                <td>{{ $booked_rcns + $not_booked_rcns }} in {{count($files)}} files</td>
                             </tr>   
                             <tr style="background-color: red; border: 2px solid #000" class="rowh">
                                 <td colspan="4"><p class="text-sm ma-2">RCN booked pending approval process: <br/> USD:{{number_format(@$usd_booked_rcn[0]['amount'] - @$total_usd_approval, 2)}} | KES: {{number_format(@$ksh_booked_rcn[0]['amount'] - @$total_ksh_approval, 2)}}</p></td>
